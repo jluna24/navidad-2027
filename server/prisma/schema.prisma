@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  id            Int          @id @default(autoincrement())
+  nombre        String
+  // Personas con la misma familia no pueden tocarse en el sorteo
+  familia       String?
+  creadoEn      DateTime     @default(now())
+  aportaciones  Aportacion[]
+  deseos        Deseo[]
+  regala        Asignacion?  @relation("regala")
+  recibe        Asignacion?  @relation("recibe")
+}
+
+// Gustos o cosas que le gustaría recibir; se muestran a quien le toque en el sorteo
+model Deseo {
+  id         Int      @id @default(autoincrement())
+  usuarioId  Int
+  usuario    Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  texto      String
+  orden      Int
+
+  @@index([usuarioId])
+}
+
+// Resultado del sorteo de intercambio: quién le regala a quién
+model Asignacion {
+  id         Int       @id @default(autoincrement())
+  daId       Int       @unique
+  da         Usuario   @relation("regala", fields: [daId], references: [id], onDelete: Cascade)
+  recibeId   Int       @unique
+  recibe     Usuario   @relation("recibe", fields: [recibeId], references: [id], onDelete: Cascade)
+  // Código del link personal con el que cada quien gira su ruleta
+  codigo     String    @unique
+  giradoEn   DateTime?
+  creadoEn   DateTime  @default(now())
+}
+
+model Aportacion {
+  id            Int      @id @default(autoincrement())
+  usuarioId     Int
+  usuario       Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  // Guardamos centavos para evitar errores de redondeo
+  montoCentavos Int
+  fecha         DateTime
+  // 'intercambio' | 'ahorro' (SQLite no soporta enums en Prisma)
+  tipo          String
+  nota          String?
+  creadoEn      DateTime @default(now())
+
+  @@index([usuarioId])
+}
