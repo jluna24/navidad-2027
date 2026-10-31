@@ -76,13 +76,13 @@ export default function FormAportacion({ inicial, onGuardar, onCancelar }: Props
       </label>
       {error && <p className="text-sm text-red-600">{error}</p>}
       <div className="flex justify-end gap-2">
-        <button type="button" onClick={onCancelar} className="rounded px-3 py-1.5 text-sm hover:bg-slate-100">
+        <button type="button" onClick={onCancelar} className="btn btn-neutro">
           Cancelar
         </button>
         <button
           type="submit"
           disabled={guardando}
-          className="rounded bg-red-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-red-800 disabled:opacity-50"
+          className="btn btn-primario"
         >
           {guardando ? 'Guardando…' : 'Guardar'}
         </button>

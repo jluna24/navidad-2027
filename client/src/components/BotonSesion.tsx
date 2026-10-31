@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { Link } from 'react-router-dom';
+import { LogIn, LogOut, X } from 'lucide-react';
 import CampoPassword from './CampoPassword';
 import { useSesion } from '../sesion';
 
@@ -24,17 +24,18 @@ export default function BotonSesion() {
   if (admin) {
     return (
       <div className="flex items-center gap-2 text-sm">
-        <Link to="/sorteo" className="rounded px-2 py-1 hover:bg-white/10">🎁 Sorteo</Link>
         <span className="rounded bg-white/20 px-2 py-0.5">Admin</span>
-        <button onClick={salir} className="rounded px-2 py-1 hover:bg-white/10">Salir</button>
+        <button onClick={salir} className="btn btn-claro">
+          <LogOut className="h-4 w-4" /> Salir
+        </button>
       </div>
     );
   }
 
   if (!abierto) {
     return (
-      <button onClick={() => setAbierto(true)} className="rounded px-2 py-1 text-sm hover:bg-white/10">
-        Entrar como admin
+      <button onClick={() => setAbierto(true)} className="btn btn-claro">
+        <LogIn className="h-4 w-4" /> Entrar como admin
       </button>
     );
   }
@@ -43,8 +44,10 @@ export default function BotonSesion() {
     <form onSubmit={submit} className="flex items-center gap-2 text-sm">
       {error && <span className="text-red-100">{error}</span>}
       <CampoPassword value={password} onChange={setPassword} autoFocus autoComplete="current-password" className="w-44" />
-      <button className="rounded bg-white px-2 py-1 font-medium text-red-700">Entrar</button>
-      <button type="button" onClick={() => setAbierto(false)} className="rounded px-2 py-1 hover:bg-white/10">✕</button>
+      <button className="btn bg-white text-red-700 hover:bg-red-50">Entrar</button>
+      <button type="button" onClick={() => setAbierto(false)} title="Cancelar" aria-label="Cancelar" className="btn btn-claro px-2">
+        <X className="h-4 w-4" />
+      </button>
     </form>
   );
 }

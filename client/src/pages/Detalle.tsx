@@ -1,5 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import { ChevronLeft, Pencil, Plus, Trash2 } from 'lucide-react';
 import { api, type Aportacion, type Config, type Tipo, type UsuarioDetalle, type UsuarioInput } from '../api';
 import BarraProgreso from '../components/BarraProgreso';
 import FormAportacion from '../components/FormAportacion';
@@ -65,8 +66,8 @@ export default function Detalle() {
 
   return (
     <div className="space-y-6">
-      <Link to="/" className="text-sm text-slate-500 hover:underline">
-        ← Volver a la lista
+      <Link to="/" className="inline-flex items-center gap-1 text-sm text-slate-500 hover:underline">
+        <ChevronLeft className="h-4 w-4" /> Volver a la lista
       </Link>
 
       {admin && editandoDatos ? (
@@ -90,9 +91,13 @@ export default function Detalle() {
             )}
           </div>
           {admin && (
-            <div className="flex gap-2 text-sm">
-              <button onClick={() => setEditandoDatos(true)} className="rounded px-3 py-1.5 hover:bg-slate-200">Editar</button>
-              <button onClick={borrarUsuario} className="rounded px-3 py-1.5 text-red-700 hover:bg-red-50">Borrar</button>
+            <div className="flex gap-2">
+              <button onClick={() => setEditandoDatos(true)} className="btn btn-neutro">
+                <Pencil className="h-4 w-4" /> Editar
+              </button>
+              <button onClick={borrarUsuario} className="btn btn-peligro">
+                <Trash2 className="h-4 w-4" /> Borrar
+              </button>
             </div>
           )}
         </div>
@@ -132,9 +137,8 @@ export default function Detalle() {
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold">Aportaciones</h2>
           {admin && editando === null && (
-            <button onClick={() => setEditando('nueva')}
-              className="rounded bg-red-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-red-800">
-              + Registrar aportación
+            <button onClick={() => setEditando('nueva')} className="btn btn-primario">
+              <Plus className="h-4 w-4" /> Registrar aportación
             </button>
           )}
         </div>
@@ -173,8 +177,12 @@ export default function Detalle() {
                   <td className="px-4 py-2 text-slate-500">{a.nota}</td>
                   {admin && (
                     <td className="space-x-1 px-4 py-2 text-right whitespace-nowrap">
-                      <button onClick={() => setEditando(a)} className="rounded px-2 py-1 hover:bg-slate-100">Editar</button>
-                      <button onClick={() => borrarAportacion(a)} className="rounded px-2 py-1 text-red-700 hover:bg-red-50">Borrar</button>
+                      <button onClick={() => setEditando(a)} className="btn btn-neutro btn-sm">
+                        <Pencil className="h-3.5 w-3.5" /> Editar
+                      </button>
+                      <button onClick={() => borrarAportacion(a)} className="btn btn-peligro btn-sm">
+                        <Trash2 className="h-3.5 w-3.5" /> Borrar
+                      </button>
                     </td>
                   )}
                 </tr>
@@ -226,8 +234,8 @@ function FormDatos({ inicial, onGuardar, onCancelar }: {
         <CampoFamilia value={familia} onChange={setFamilia} existentes={existentes} className="mt-1" inputClassName="px-2 py-1.5" />
       </label>
       <div className="flex gap-2">
-        <button type="button" onClick={onCancelar} className="rounded px-3 py-1.5 text-sm hover:bg-slate-100">Cancelar</button>
-        <button className="rounded bg-red-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-red-800">Guardar</button>
+        <button type="button" onClick={onCancelar} className="btn btn-neutro">Cancelar</button>
+        <button className="btn btn-primario">Guardar</button>
       </div>
       {error && <p className="text-sm text-red-600 sm:col-span-3">{error}</p>}
     </form>

@@ -1,8 +1,10 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
+import { Plus } from 'lucide-react';
 import { api, type Config, type UsuarioResumen } from '../api';
 import BarraProgreso from '../components/BarraProgreso';
 import CampoFamilia from '../components/CampoFamilia';
+import Tarjeta from '../components/Tarjeta';
 import { formatFecha, formatMonto, semanasRestantes } from '../format';
 import { useSesion } from '../sesion';
 
@@ -78,7 +80,9 @@ export default function Lista() {
             existentes={usuarios.map((u) => u.familia)}
             inputClassName="px-3 py-2"
           />
-          <button className="rounded bg-red-700 px-4 py-2 font-medium text-white hover:bg-red-800">Agregar</button>
+          <button className="btn btn-primario px-4 py-2 text-base">
+            <Plus className="h-4 w-4" /> Agregar
+          </button>
         </form>
       )}
       {error && <p className="text-sm text-red-600">{error}</p>}
@@ -157,16 +161,6 @@ export default function Lista() {
           </tbody>
         </table>
       </div>
-    </div>
-  );
-}
-
-function Tarjeta({ titulo, valor, detalle }: { titulo: string; valor: string; detalle: string }) {
-  return (
-    <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-      <p className="text-sm text-slate-500">{titulo}</p>
-      <p className="text-2xl font-bold">{valor}</p>
-      <p className="text-xs text-slate-500">{detalle}</p>
     </div>
   );
 }

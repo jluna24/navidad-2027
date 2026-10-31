@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Eye, EyeOff } from 'lucide-react';
 import { api, type Intercambio } from '../api';
 import { formatFecha } from '../format';
 
@@ -32,8 +33,12 @@ export default function ResultadoSorteo({ usuarioId }: { usuarioId: number }) {
                 <span className="rounded bg-slate-200 px-2 tracking-widest text-slate-400 select-none">••••••</span>
               )}
             </p>
-            <button onClick={() => setVisible(!visible)} className="rounded px-2 py-0.5 text-xs text-slate-500 hover:bg-slate-100">
-              {visible ? 'Ocultar' : '👁 Mostrar'}
+            <button
+              onClick={() => setVisible(!visible)}
+              className="btn btn-secundario shrink-0"
+            >
+              {visible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              {visible ? 'Ocultar' : 'Mostrar'}
             </button>
           </div>
           <p className="mt-1 text-xs text-slate-500">

@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react';
+import { RotateCcw } from 'lucide-react';
 import { api } from '../api';
 import CampoPassword from './CampoPassword';
 import { useConfirmar } from '../confirmar';
@@ -65,8 +66,8 @@ export default function ReiniciarGiro({ girados, onReiniciado }: Props) {
               {girados.length > 1 && <option value="todos">Todos los que ya giraron ({girados.length})</option>}
             </select>
             <CampoPassword value={password} onChange={setPassword} placeholder="Contraseña de admin" autoComplete="off" className="w-52" />
-            <button className="rounded border border-red-700 px-3 py-1.5 font-medium text-red-700 hover:bg-red-50">
-              Reiniciar giro
+            <button className="btn btn-secundario">
+              <RotateCcw className="h-4 w-4" /> Reiniciar giro
             </button>
           </div>
         )}

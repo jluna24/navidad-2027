@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react';
+import { Pencil, Plus, X } from 'lucide-react';
 
 const MINIMO = 3;
 const MAXIMO = 10;
@@ -17,8 +18,9 @@ export default function Deseos({ deseos, admin, onGuardar }: Props) {
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold">🎁 Gustos y deseos</h2>
         {admin && !editando && (
-          <button onClick={() => setEditando(true)} className="rounded px-3 py-1.5 text-sm hover:bg-slate-200">
-            {deseos.length ? 'Editar' : '+ Agregar'}
+          <button onClick={() => setEditando(true)} className="btn btn-neutro">
+            {deseos.length ? <Pencil className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+            {deseos.length ? 'Editar' : 'Agregar'}
           </button>
         )}
       </div>
@@ -84,15 +86,15 @@ function FormDeseos({ inicial, onGuardar, onCancelar }: {
             className="flex-1 rounded border border-slate-300 px-2 py-1.5"
           />
           {deseos.length > MINIMO && (
-            <button type="button" onClick={() => quitar(i)} title="Quitar" className="rounded px-2 text-slate-400 hover:bg-slate-100">
-              ✕
+            <button type="button" onClick={() => quitar(i)} title="Quitar" aria-label="Quitar" className="btn btn-neutro px-2 text-slate-500">
+              <X className="h-4 w-4" />
             </button>
           )}
         </div>
       ))}
       {deseos.length < MAXIMO && (
-        <button type="button" onClick={() => setDeseos([...deseos, ''])} className="text-sm text-red-700 hover:underline">
-          + Agregar otro
+        <button type="button" onClick={() => setDeseos([...deseos, ''])} className="btn btn-secundario btn-sm">
+          <Plus className="h-3.5 w-3.5" /> Agregar otro
         </button>
       )}
       {error && <p className="text-sm text-red-600">{error}</p>}
@@ -100,10 +102,10 @@ function FormDeseos({ inicial, onGuardar, onCancelar }: {
         <span className={`mr-auto text-xs ${llenos < MINIMO ? 'text-amber-700' : 'text-green-700'}`}>
           {llenos} de {MINIMO} mínimo
         </span>
-        <button type="button" onClick={onCancelar} className="rounded px-3 py-1.5 text-sm hover:bg-slate-100">Cancelar</button>
+        <button type="button" onClick={onCancelar} className="btn btn-neutro">Cancelar</button>
         <button
           disabled={llenos < MINIMO}
-          className="rounded bg-red-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-red-800 disabled:opacity-50"
+          className="btn btn-primario"
         >
           Guardar
         </button>

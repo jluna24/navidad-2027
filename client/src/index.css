@@ -16,3 +16,33 @@ input[type='password']::-ms-clear {
     transform: scale(1) rotate(0);
   }
 }
+
+/* Botones: usar `btn` + una variante para que todos se vean iguales */
+@layer components {
+  .btn {
+    @apply inline-flex cursor-pointer items-center justify-center gap-1.5 rounded px-3 py-1.5 text-sm font-medium whitespace-nowrap transition-colors disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  /* Acción principal de la pantalla */
+  .btn-primario {
+    @apply bg-red-700 text-white enabled:hover:bg-red-800;
+  }
+  /* Acción secundaria (ver, mostrar, reiniciar) */
+  .btn-secundario {
+    @apply border border-red-700 bg-white text-red-700 enabled:hover:bg-red-50;
+  }
+  /* Editar, cancelar */
+  .btn-neutro {
+    @apply border border-slate-300 bg-white text-slate-700 enabled:hover:bg-slate-100;
+  }
+  /* Borrar */
+  .btn-peligro {
+    @apply border border-slate-300 bg-white text-red-700 enabled:hover:border-red-300 enabled:hover:bg-red-50;
+  }
+  /* Sobre el encabezado rojo */
+  .btn-claro {
+    @apply border border-white/50 text-white hover:bg-white/10;
+  }
+  .btn-sm {
+    @apply px-2 py-1 text-xs;
+  }
+}

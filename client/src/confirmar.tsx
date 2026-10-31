@@ -83,16 +83,14 @@ function Modal({
           <button
             ref={cancelarRef}
             onClick={() => responder(false)}
-            className="rounded px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-200"
+            className="btn btn-neutro px-4 py-2"
           >
             {textoCancelar}
           </button>
           <button
             ref={confirmarRef}
             onClick={() => responder(true)}
-            className={`rounded px-4 py-2 text-sm font-medium text-white ${
-              peligro ? 'bg-red-700 hover:bg-red-800' : 'bg-green-700 hover:bg-green-800'
-            }`}
+            className={`btn px-4 py-2 text-white ${peligro ? 'btn-primario' : 'bg-green-700 hover:bg-green-800'}`}
           >
             {textoConfirmar}
           </button>

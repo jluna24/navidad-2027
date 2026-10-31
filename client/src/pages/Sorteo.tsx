@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Check, Eye, FerrisWheel, Shuffle, Trash2 } from 'lucide-react';
 import { api, type Sorteo as SorteoData } from '../api';
 import { useSesion } from '../sesion';
 import { useConfirmar } from '../confirmar';
 import ReiniciarGiro from '../components/ReiniciarGiro';
 
 export default function Sorteo() {
-  const { admin } = useSesion();
+  const { admin, verificando } = useSesion();
   const navigate = useNavigate();
   const confirmar = useConfirmar();
   const [sorteo, setSorteo] = useState<SorteoData | null>(null);
@@ -23,7 +24,8 @@ export default function Sorteo() {
     if (admin) cargar();
   }, [admin]);
 
-  if (!admin) return <p className="text-slate-500">Solo el admin puede ver esta página.</p>;
+  if (verificando) return <p>Cargando…</p>;
+  if (!admin) return <Navigate to="/" replace />;
   if (!sorteo) return <p>{error ?? 'Cargando…'}</p>;
 
   const girados = sorteo.participantes.filter((p) => p.giradoEn).length;
@@ -85,17 +87,17 @@ export default function Sorteo() {
         </div>
         <div className="flex gap-2">
           {sorteo.hecho && (
-            <button onClick={cancelarSorteo} className="rounded px-3 py-2 text-sm text-red-700 hover:bg-red-50">
-              Borrar sorteo
+            <button onClick={cancelarSorteo} className="btn btn-peligro">
+              <Trash2 className="h-4 w-4" /> Borrar sorteo
             </button>
           )}
           <button
             onClick={hacerSorteo}
             disabled={trabajando || sinFamilia.length > 0}
             title={sinFamilia.length ? 'Primero captura la familia de todos' : undefined}
-            className="rounded bg-red-700 px-4 py-2 font-medium text-white hover:bg-red-800 disabled:opacity-50"
+            className="btn btn-primario"
           >
-            {sorteo.hecho ? 'Rehacer sorteo' : 'Hacer sorteo'}
+            <Shuffle className="h-4 w-4" /> {sorteo.hecho ? 'Rehacer sorteo' : 'Hacer sorteo'}
           </button>
         </div>
       </div>
@@ -170,18 +172,23 @@ export default function Sorteo() {
                     {!p.codigo ? (
                       <span className="text-amber-700">Sin asignación</span>
                     ) : p.giradoEn ? (
-                      <span className="space-x-2">
-                        <span className="text-green-700">✓ Ya giró</span>
-                        <button onClick={() => volverAVer(p.nombre, p.codigo!)} className="text-xs text-slate-500 hover:underline">
-                          Volver a ver
+                      <span className="inline-flex items-center gap-3">
+                        <span className="inline-flex cursor-default items-center gap-1.5 rounded border border-green-200 bg-green-50 px-3 py-1.5 text-sm font-medium text-green-700">
+                          <Check className="h-4 w-4" /> Ya giró
+                        </span>
+                        <button
+                          onClick={() => volverAVer(p.nombre, p.codigo!)}
+                          className="btn btn-secundario"
+                        >
+                          <Eye className="h-4 w-4" /> Volver a ver
                         </button>
                       </span>
                     ) : (
                       <button
                         onClick={() => navigate(`/ruleta/${p.codigo}`)}
-                        className="rounded bg-red-700 px-3 py-1 font-medium text-white hover:bg-red-800"
+                        className="btn btn-primario"
                       >
-                        🎡 Girar
+                        <FerrisWheel className="h-4 w-4" /> Girar
                       </button>
                     )}
                   </td>
