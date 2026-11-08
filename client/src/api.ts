@@ -126,7 +126,7 @@ export const api = {
   borrarAportacion: (id: number) => request(`/aportaciones/${id}`, { method: 'DELETE' }),
   sorteo: () => request<Sorteo>('/sorteo'),
   hacerSorteo: () => request('/sorteo', { method: 'POST' }),
-  reiniciarGiro: (usuarioId: number | 'todos', password: string) =>
+  reiniciarGiro: (usuarioId: number | 'todos', password?: string) =>
     request<{ reiniciados: number }>('/sorteo/reiniciar-giro', json('POST', { usuarioId, password })),
   borrarSorteo: () => request('/sorteo', { method: 'DELETE' }),
   ruleta: (codigo: string) => request<Ruleta>(`/ruleta/${codigo}`),

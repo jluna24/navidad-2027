@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
-import { Check, Eye, FerrisWheel, Shuffle, Trash2 } from 'lucide-react';
+import { Check, Eye, FerrisWheel, RotateCcw, Shuffle, Trash2 } from 'lucide-react';
 import { api, type Sorteo as SorteoData } from '../api';
 import { useSesion } from '../sesion';
 import { useConfirmar } from '../confirmar';
@@ -72,6 +72,18 @@ export default function Sorteo() {
     })) {
       navigate(`/ruleta/${codigo}`);
     }
+  }
+
+  async function volverAGirar(id: number, nombre: string) {
+    if (!(await confirmar({
+      emoji: '🎡',
+      titulo: `¿Dejar que ${nombre} vuelva a girar?`,
+      mensaje: `Se borra el registro de que ${nombre} ya giró. Le seguirá tocando la misma persona.`,
+      textoConfirmar: 'Volver a girar',
+      peligro: true,
+    }))) return;
+    await api.reiniciarGiro(id).catch((e) => setError(e.message));
+    await cargar();
   }
 
   return (
@@ -181,6 +193,12 @@ export default function Sorteo() {
                           className="btn btn-secundario"
                         >
                           <Eye className="h-4 w-4" /> Volver a ver
+                        </button>
+                        <button
+                          onClick={() => volverAGirar(p.id, p.nombre)}
+                          className="btn btn-secundario"
+                        >
+                          <RotateCcw className="h-4 w-4" /> Volver a girar
                         </button>
                       </span>
                     ) : (

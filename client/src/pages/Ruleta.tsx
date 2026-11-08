@@ -1,5 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { toBlob } from 'html-to-image';
+import { Share2 } from 'lucide-react';
 import { api, type Ruleta as RuletaData } from '../api';
 import { useSesion } from '../sesion';
 
@@ -15,6 +17,8 @@ export default function Ruleta() {
   const [rotacion, setRotacion] = useState(0);
   const [girando, setGirando] = useState(false);
   const [resultado, setResultado] = useState<{ recibe: string; deseos: string[] } | null>(null);
+  const tarjeta = useRef<HTMLDivElement>(null);
+  const [compartiendo, setCompartiendo] = useState(false);
 
   useEffect(() => {
     api.ruleta(codigo).then((r) => {
@@ -50,6 +54,39 @@ export default function Ruleta() {
 
   const revelado = resultado && !girando;
 
+  async function compartir() {
+    if (!tarjeta.current || !resultado) return;
+    setCompartiendo(true);
+    try {
+      const blob = await toBlob(tarjeta.current, {
+        pixelRatio: 2,
+        backgroundColor: '#ffffff',
+        // Sin la animación de entrada, si no puede capturarse a medio aparecer
+        style: { animation: 'none', boxShadow: 'none' },
+      });
+      if (!blob) throw new Error('No se pudo generar la imagen');
+      const nombreArchivo = `intercambio-${ruleta!.nombre}.png`.replace(/\s+/g, '-');
+      const archivo = new File([blob], nombreArchivo, { type: 'image/png' });
+
+      // En celular abre el menú de compartir (WhatsApp, etc.); en compu se descarga
+      if (navigator.canShare?.({ files: [archivo] })) {
+        await navigator.share({ files: [archivo], title: 'Mi intercambio 🎁' });
+      } else {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = nombreArchivo;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+    } catch (e) {
+      // Cerrar el menú de compartir sin elegir nada no es un error
+      if ((e as Error).name !== 'AbortError') alert((e as Error).message);
+    } finally {
+      setCompartiendo(false);
+    }
+  }
+
   return (
     <div className="mx-auto max-w-md space-y-6 text-center">
       <div>
@@ -61,7 +98,7 @@ export default function Ruleta() {
 
       {revelado ? (
         <>
-          <div className="animate-[aparecer_0.6s_ease-out] rounded-2xl border-4 border-red-700 bg-white p-8 shadow-lg">
+          <div ref={tarjeta} className="animate-[aparecer_0.6s_ease-out] rounded-2xl border-4 border-red-700 bg-white p-8 shadow-lg">
             <p className="text-6xl">🎁</p>
             <p className="mt-4 text-sm tracking-wide text-slate-500 uppercase">Te tocó</p>
             <p className="text-4xl font-bold text-red-700">{resultado.recibe}</p>
@@ -84,12 +121,21 @@ export default function Ruleta() {
 
             <p className="mt-6 text-sm text-slate-500">🤫 Es secreto, ¡no le digas a nadie!</p>
           </div>
-          <button
-            onClick={listo}
-            className="rounded-full bg-slate-800 px-10 py-3 text-lg font-bold text-white shadow-md hover:bg-slate-900"
-          >
-            Listo, ocultar
-          </button>
+          <div className="flex flex-wrap justify-center gap-3">
+            <button
+              onClick={compartir}
+              disabled={compartiendo}
+              className="inline-flex items-center gap-2 rounded-full bg-green-700 px-8 py-3 text-lg font-bold text-white shadow-md hover:bg-green-800 disabled:opacity-60"
+            >
+              <Share2 className="h-5 w-5" /> {compartiendo ? 'Generando…' : 'Guardar imagen'}
+            </button>
+            <button
+              onClick={listo}
+              className="rounded-full bg-slate-800 px-10 py-3 text-lg font-bold text-white shadow-md hover:bg-slate-900"
+            >
+              Listo, ocultar
+            </button>
+          </div>
         </>
       ) : (
         <>

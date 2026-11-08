@@ -182,13 +182,14 @@ router.post(
   }),
 );
 
-// Permite volver a girar (misma asignación). Pide la contraseña otra vez para que no baste
-// con encontrar la sesión abierta.
+// Permite volver a girar (misma asignación). Para una sola persona basta la sesión de admin
+// (el panel pide confirmación); reiniciar a todos pide la contraseña otra vez para que no
+// baste con encontrar la sesión abierta.
 router.post(
   '/sorteo/reiniciar-giro',
   h(async (req, res) => {
-    if (!passwordCorrecta(req.body?.password)) throw new HttpError(403, 'Contraseña incorrecta');
     const todos = req.body?.usuarioId === 'todos';
+    if (todos && !passwordCorrecta(req.body?.password)) throw new HttpError(403, 'Contraseña incorrecta');
     const { count } = await prisma.asignacion.updateMany({
       where: todos ? { giradoEn: { not: null } } : { daId: parseId(String(req.body?.usuarioId)), giradoEn: { not: null } },
       data: { giradoEn: null },
